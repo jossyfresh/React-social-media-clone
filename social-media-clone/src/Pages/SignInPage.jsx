@@ -12,8 +12,14 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useSelector, useDispatch } from "react-redux";
-import { signIn } from "../redux/features/SignInSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { signIn, signOut, selectUser } from "../redux/features/SignInSlice";
+import {
+  auth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signInWithEmailAndPassword,
+} from "../firebase";
 
 function Copyright(props) {
   return (
@@ -69,16 +75,33 @@ const SignIn = () => {
 };
 
 export default function Google() {
-  const dispatch = useDispatch();
   const [user, setuser] = React.useState({
     email: "",
     password: "",
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(signIn(user));
+  const dispatch = useDispatch();
+  const curr = useSelector(selectUser);
+  const login = (event) => {
+    event.preventDefault();
+    signInWithEmailAndPassword(auth, user.email, user.password)
+      .then((userAuth) => {
+        dispatch(
+          signIn({
+            email: userAuth.user.email,
+            uid: userAuth.user.uid,
+            displayName: userAuth.user.displayName,
+            username: userAuth.user.usename,
+            photoURL: userAuth.user.photoURL,
+          })
+        );
+      })
+      .catch((err) => {
+        alert(err);
+      });
+    console.log(curr.email);
   };
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -133,7 +156,7 @@ export default function Google() {
                 mt: 3,
                 mb: 2,
               }}
-              onClick={handleSubmit}>
+              onClick={login}>
               Sign In
             </Button>
             <SignIn />

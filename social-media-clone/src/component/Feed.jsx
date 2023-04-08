@@ -5,57 +5,39 @@ import {
   ShareOutlined,
 } from "@mui/icons-material";
 import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
-import FlexBetween from "components/FlexBetween";
-import Friend from "components/Friend";
-import WidgetWrapper from "components/WidgetWrapper";
+import FlexBetween from "./FlexBetween";
+import Friend from "./Friend";
+import Wrapper from "./Wrapper";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setPost } from "state";
 
-const PostWidget = ({
-  postId,
-  postUserId,
-  name,
-  description,
-  location,
-  picturePath,
-  userPicturePath,
-  likes,
-  comments,
-}) => {
+const Feed = ({ postid, userid, imageurl, like, comment, description }) => {
   const [isComments, setIsComments] = useState(false);
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.token);
-  const loggedInUserId = useSelector((state) => state.user._id);
-  const isLiked = Boolean(likes[loggedInUserId]);
-  const likeCount = Object.keys(likes).length;
+  const comments = ["", ""];
+  const isLiked = true;
+  const likeCount = 10;
   const main = "#A3A3A3";
   const primary = "#00D5FA";
-
+  const description =
+    "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Al";
   return (
-    <WidgetWrapper m="2rem 0">
-      <Friend
-        friendId={postUserId}
-        name={name}
-        subtitle={location}
-        userPicturePath={userPicturePath}
-      />
+    <Wrapper m="2rem 0">
+      <Friend userPicturePath={userPicturePath} />
       <Typography color={main} sx={{ mt: "1rem" }}>
         {description}
       </Typography>
-      {picturePath && (
+      {userPicturePath && (
         <img
           width="100%"
           height="auto"
           alt="post"
           style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
-          src={`http://localhost:3001/assets/${picturePath}`}
+          src="https://picsum.photos/200/150"
         />
       )}
       <FlexBetween mt="0.25rem">
         <FlexBetween gap="1rem">
           <FlexBetween gap="0.3rem">
-            <IconButton onClick={patchLike}>
+            <IconButton>
               {isLiked ? (
                 <FavoriteOutlined sx={{ color: primary }} />
               ) : (
@@ -66,16 +48,12 @@ const PostWidget = ({
           </FlexBetween>
 
           <FlexBetween gap="0.3rem">
-            <IconButton onClick={() => setIsComments(!isComments)}>
+            <IconButton>
               <ChatBubbleOutlineOutlined />
             </IconButton>
-            <Typography>{comments.length}</Typography>
+            <Typography> {10} </Typography>
           </FlexBetween>
         </FlexBetween>
-
-        <IconButton>
-          <ShareOutlined />
-        </IconButton>
       </FlexBetween>
       {isComments && (
         <Box mt="0.5rem">
@@ -90,8 +68,8 @@ const PostWidget = ({
           <Divider />
         </Box>
       )}
-    </WidgetWrapper>
+    </Wrapper>
   );
 };
 
-export default PostWidget;
+export default Feed;

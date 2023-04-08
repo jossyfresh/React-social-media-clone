@@ -1,17 +1,17 @@
 import React from "react";
-import Navbar from "./Pages/Navbar";
-import SignIn from "./Pages/SignInPage";
-import SignUp from "./Pages/SignUpPage";
-import UserWidget from "./component/UserWidget";
-import MyPostWidget from "./component/CreatePost";
-import ProfilePage from "./component/Profile";
+import CreatePost from "./component/CreatePost";
+import Feed from "./component/Feed";
 import Friend from "./component/Friend";
-
+import ShowProfile from "./component/ShowProfile";
+import HomePage from "./Pages/HomePage";
+import SignUp from "./Pages/SignUpPage";
+import SignIn from "./Pages/SignInPage";
+import Navbar from "./Pages/Navbar";
 const App = () => {
   const hello = "https://picsum.photos/200/300";
   return (
     <div>
-      <SignUp />
+      <Navbar />
     </div>
   );
 };

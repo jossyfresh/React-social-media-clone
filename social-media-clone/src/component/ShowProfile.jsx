@@ -5,11 +5,11 @@ import {
   WorkOutlineOutlined,
 } from "@mui/icons-material";
 import { Box, Typography, Divider, useTheme } from "@mui/material";
-import UserImage from "./UserImage";
+import ProfilePic from "./ProfilePic";
 import FlexBetween from "./FlexBetween";
-import WidgetWrapper from "./WidgetWrapper";
+import Wrapper from "./Wrapper";
 
-const UserWidget = ({ picturePath }) => {
+const ShowProfile = ({ picturePath }) => {
   const { palette } = useTheme();
   const dark = "#000";
   const medium = "#6b7280";
@@ -26,11 +26,11 @@ const UserWidget = ({ picturePath }) => {
   };
 
   return (
-    <WidgetWrapper>
+    <Wrapper>
       {/* FIRST ROW */}
       <FlexBetween gap="0.5rem" pb="1.1rem">
         <FlexBetween gap="1rem">
-          <UserImage image="" />
+          <ProfilePic image="" />
           <Box>
             <Typography
               variant="h4"
@@ -44,10 +44,9 @@ const UserWidget = ({ picturePath }) => {
               }}>
               {users.firstName} {users.lastName}
             </Typography>
-            <Typography color={medium}>{10} friends</Typography>
+            <Typography color={medium}>{10} Followers</Typography>
           </Box>
         </FlexBetween>
-        <ManageAccountsOutlined />
       </FlexBetween>
 
       <Divider />
@@ -97,8 +96,8 @@ const UserWidget = ({ picturePath }) => {
           </FlexBetween>
         </FlexBetween>
       </Box>
-    </WidgetWrapper>
+    </Wrapper>
   );
 };
 
-export default UserWidget;
+export default ShowProfile;

@@ -1,12 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: {
-    firstname: "",
-    lastname: "",
-    email: "",
-    password: "",
-  },
+  user: {},
+  isFetching: false,
+  isSuccess: false,
+  isError: false,
 };
 
 const signUpSlice = createSlice({

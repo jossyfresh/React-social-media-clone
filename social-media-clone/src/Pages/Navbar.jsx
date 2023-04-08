@@ -15,6 +15,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import { firestore } from "../firebase";
+import { addDoc, collection } from "@firebase/firestore";
+import { async } from "@firebase/util";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -56,6 +59,20 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
+  const ref = collection(firestore, "Posts");
+  const onclick = async (e) => {
+    e.preventDefault();
+    try {
+      addDoc(ref, {
+        postid: "123",
+        userid: "233",
+        description: "yes",
+      });
+    } catch (e) {
+      console.log("error");
+    }
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -80,9 +97,7 @@ export default function PrimarySearchAppBar() {
               size="large"
               aria-label="show 4 new mails"
               color="inherit"
-              onClick={() => {
-                console.log("hey");
-              }}>
+              onClick={onclick}>
               <Badge badgeContent={4} color="error">
                 <MailIcon />
               </Badge>

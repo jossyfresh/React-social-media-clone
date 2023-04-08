@@ -1,10 +1,10 @@
 import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/material";
 import FlexBetween from "./FlexBetween";
-import UserImage from "./UserImage";
+import ProfilePic from "./ProfilePic";
 
 const Friend = ({ userPicturePath }) => {
-  const isFriend = true;
+  const isFriend = false;
   const main = "#00D5FA";
   const medium = "#666666";
   const name = "name";
@@ -12,7 +12,7 @@ const Friend = ({ userPicturePath }) => {
   return (
     <FlexBetween>
       <FlexBetween gap="1rem">
-        <UserImage image={userPicturePath} size="55px" />
+        <ProfilePic image={userPicturePath} size="55px" />
         <Box>
           <Typography
             color={main}

@@ -12,8 +12,16 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useSelector, useDispatch } from "react-redux";
-import { signUp } from "../redux/features/SignUpSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { signIn, selectUser } from "../redux/features/SignInSlice";
+import {
+  auth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "../firebase";
+import { firestore } from "../firebase";
+import { addDoc, collection } from "@firebase/firestore";
+import { async } from "@firebase/util";
 
 function Copyright() {
   return (
@@ -34,16 +42,41 @@ export default function SignUp() {
   const [user, setuser] = React.useState({
     firstName: "",
     lastName: "",
+    username: "",
     email: "",
     password: "",
   });
+
   const dispatch = useDispatch();
-
-  const handleSubmit = (event) => {
+  const curr = useSelector(selectUser);
+  const ref = collection(firestore, "users");
+  const register = async (event) => {
+    console.log(user);
     event.preventDefault();
-    dispatch(signUp(user));
+    createUserWithEmailAndPassword(auth, user.email, user.password)
+      .then((userAuth) => {
+        updateProfile(userAuth.user, {
+          displayName: user.firstName + " " + user.lastName,
+          photoURL: "",
+        })
+          .then(
+            dispatch(
+              signIn({
+                email: userAuth.user.email,
+                displayName: userAuth.user.displayName,
+                uid: userAuth.user.uid,
+                photoURL: userAuth.user.photoURL,
+              })
+            )
+          )
+          .catch((error) => {
+            console.log("user not updated");
+          });
+      })
+      .catch((err) => {
+        alert(err);
+      });
   };
-
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -61,11 +94,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}>
+          <Box component="form" noValidate onSubmit={register} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -93,6 +122,20 @@ export default function SignUp() {
                   value={user.lastName}
                   onChange={(e) =>
                     setuser({ ...user, lastName: e.target.value })
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="username"
+                  label="username"
+                  name="username"
+                  autoComplete="username"
+                  value={user.username}
+                  onChange={(e) =>
+                    setuser({ ...user, username: e.target.value })
                   }
                 />
               </Grid>
@@ -137,7 +180,7 @@ export default function SignUp() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={handleSubmit}>
+              onClick={register}>
               Sign Up
             </Button>
             <Grid
