@@ -3,28 +3,27 @@ import { Box, IconButton, Typography } from "@mui/material";
 import FlexBetween from "./FlexBetween";
 import ProfilePic from "./ProfilePic";
 
-const Friend = ({ userPicturePath }) => {
-  const isFriend = false;
+const Friend = ({ userPicturePath, username }) => {
   const main = "#00D5FA";
   const medium = "#666666";
-  const name = "name";
-
+  const subtitle = "subtitle";
+  const isFollowing = true;
   return (
     <FlexBetween>
       <FlexBetween gap="1rem">
-        <ProfilePic image={userPicturePath} size="55px" />
+        <ProfilePic src={userPicturePath} size={"50px"} />
         <Box>
           <Typography
             color={main}
-            variant="h5"
-            fontWeight="500"
+            variant="h6"
+            fontWeight="400"
             sx={{
               "&:hover": {
                 color: main,
                 cursor: "pointer",
               },
             }}>
-            {name}
+            {username}
           </Typography>
           <Typography color={medium} fontSize="0.75rem">
             subtitle
@@ -34,7 +33,7 @@ const Friend = ({ userPicturePath }) => {
       <IconButton
         sx={{ backgroundColor: medium, p: "0.6rem" }}
         onClick={() => {}}>
-        {isFriend ? (
+        {isFollowing ? (
           <PersonRemoveOutlined sx={{ color: main }} />
         ) : (
           <PersonAddOutlined sx={{ color: main }} />

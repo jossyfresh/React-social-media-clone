@@ -1,30 +1,30 @@
 import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
-import {
-  Badge,
-  Menu,
-  Avatar,
-  InputBase,
-  Typography,
-  IconButton,
-  Toolbar,
-  AppBar,
-  Box,
-} from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import InputBase from "@mui/material/InputBase";
+import Badge from "@mui/material/Badge";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import { firestore } from "../firebase";
-import { addDoc, collection } from "@firebase/firestore";
-import { async } from "@firebase/util";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
+import { useNavigate } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
   "&:hover": {
-    backgroundColor: alpha(theme.palette.common.black, 0.25),
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
@@ -59,20 +59,41 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
-  const ref = collection(firestore, "Posts");
-  const onclick = async (e) => {
-    e.preventDefault();
-    try {
-      addDoc(ref, {
-        postid: "123",
-        userid: "233",
-        description: "yes",
-      });
-    } catch (e) {
-      console.log("error");
-    }
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
+  const menuId = "primary-search-account-menu";
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}>
+      <MenuItem onClick={navigate("/setupProfile")}>Edit Profile</MenuItem>
+    </Menu>
+  );
+
+  const mobileMenuId = "primary-search-account-menu-mobile";
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -81,7 +102,9 @@ export default function PrimarySearchAppBar() {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}></Typography>
+            sx={{ display: { xs: "none", sm: "block" } }}>
+            MEDIA
+          </Typography>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -96,8 +119,7 @@ export default function PrimarySearchAppBar() {
             <IconButton
               size="large"
               aria-label="show 4 new mails"
-              color="inherit"
-              onClick={onclick}>
+              color="inherit">
               <Badge badgeContent={4} color="error">
                 <MailIcon />
               </Badge>
@@ -114,30 +136,22 @@ export default function PrimarySearchAppBar() {
               size="large"
               edge="end"
               aria-label="account of current user"
-              aria-controls=""
+              aria-controls={menuId}
               aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
               color="inherit">
-              <Badge>
+              <Stack direction="row" spacing={2}>
                 <Avatar
                   alt="Jemy Sharp"
                   src="/static/images/avatar/1.jpg"
                   sx={{ width: 24, height: 24 }}
                 />
-              </Badge>
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls=""
-              aria-haspopup="true"
-              color="inherit">
-              <MoreIcon />
+              </Stack>
             </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
+      {renderMenu}
     </Box>
   );
 }

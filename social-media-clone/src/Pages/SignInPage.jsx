@@ -13,13 +13,25 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
-import { signIn, signOut, selectUser } from "../redux/features/SignInSlice";
+import {
+  signIn,
+  signOut,
+  selectUser,
+  setPost,
+} from "../redux/features/SignInSlice";
 import {
   auth,
   createUserWithEmailAndPassword,
   updateProfile,
   signInWithEmailAndPassword,
+  firestore,
+  signInWithGoogle,
 } from "../firebase";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { doc, getDoc, getDocs, collection } from "firebase/firestore";
 
 function Copyright(props) {
   return (
@@ -33,11 +45,11 @@ function Copyright(props) {
     </Typography>
   );
 }
-
-const theme = createTheme();
 const SignIn = () => {
   return (
-    <button className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-black bg-slate-100 dark:bg-slate-900 border border-transparent rounded-md shadow-sm hover:bg-gray hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+    <button
+      onClick={check}
+      className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-black bg-slate-100 dark:bg-slate-900 border border-transparent rounded-md shadow-sm hover:bg-gray hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className="w-7 h-5"
@@ -76,31 +88,55 @@ const SignIn = () => {
 
 export default function Google() {
   const [user, setuser] = React.useState({
-    email: "",
-    password: "",
+    firstname: "",
+    lastname: "",
+    username: "",
+    imgurl: "",
   });
 
+  const theme = createTheme();
   const dispatch = useDispatch();
   const curr = useSelector(selectUser);
+  const navigate = useNavigate();
+  const [use, loading, error] = useAuthState(auth);
   const login = (event) => {
     event.preventDefault();
     signInWithEmailAndPassword(auth, user.email, user.password)
-      .then((userAuth) => {
-        dispatch(
-          signIn({
-            email: userAuth.user.email,
-            uid: userAuth.user.uid,
-            displayName: userAuth.user.displayName,
-            username: userAuth.user.usename,
-            photoURL: userAuth.user.photoURL,
-          })
-        );
-      })
+      .then((userAuth) => {})
       .catch((err) => {
         alert(err);
       });
-    console.log(curr.email);
   };
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+    if (use) {
+      const uid = use.uid;
+      const getuser = async () => {
+        const data = [];
+        const docRef = doc(firestore, "users", uid);
+        const docSnap = await getDoc(docRef);
+        dispatch(signIn({ users: docSnap.data() }));
+      };
+      const getPosts = async () => {
+        const data = [];
+        const posts = await getDocs(collection(firestore, "posts"));
+        posts.forEach((post) => {
+          data.push(post.data());
+        });
+        console.log(data);
+        dispatch(
+          setPost({
+            data,
+          })
+        );
+      };
+      getPosts();
+      getuser();
+      navigate("/homepage");
+    }
+  }, [user, loading]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -153,26 +189,31 @@ export default function Google() {
               fullWidth
               variant="contained"
               sx={{
-                mt: 3,
+                mt: 2,
                 mb: 2,
               }}
               onClick={login}>
               Sign In
             </Button>
-            <SignIn />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{
+                mt: 1,
+                mb: 2,
+              }}
+              onClick={signInWithGoogle}>
+              Sign In With Google
+            </Button>
             <Grid
               container
               sx={{
                 mt: 2,
                 mb: 2,
               }}>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/Singup" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

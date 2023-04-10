@@ -8,29 +8,31 @@ import { Box, Typography, Divider, useTheme } from "@mui/material";
 import ProfilePic from "./ProfilePic";
 import FlexBetween from "./FlexBetween";
 import Wrapper from "./Wrapper";
+import { useDispatch, useSelector } from "react-redux";
+import { firestore } from "../firebase";
+import { doc, onSnapshot } from "@firebase/firestore";
+import { useEffect, useState } from "react";
 
-const ShowProfile = ({ picturePath }) => {
+const ShowProfile = () => {
+  const [getuseinfo, setuserinfo] = useState([]);
+  const curuser = useSelector((state) => state.SignIn.user);
   const { palette } = useTheme();
   const dark = "#000";
   const medium = "#6b7280";
   const main = "#1a202c";
-
-  const users = {
-    firstName: "firstName",
-    lastName: "lastName",
-    location: "location",
-    occupation: "occupation",
-    viewedProfile: "viewedProfile",
-    impressions: "impressions",
-    friends: "friends",
-  };
+  const userinfo = useSelector((state) => state.SignIn.user);
+  const username = "username";
+  const hello = "https://picsum.photos/200/200";
+  const fname = "hello";
+  const lname = "world";
+  const uname = "hello_world";
 
   return (
     <Wrapper>
       {/* FIRST ROW */}
       <FlexBetween gap="0.5rem" pb="1.1rem">
         <FlexBetween gap="1rem">
-          <ProfilePic image="" />
+          <ProfilePic src={hello} />
           <Box>
             <Typography
               variant="h4"
@@ -38,13 +40,13 @@ const ShowProfile = ({ picturePath }) => {
               fontWeight="500"
               sx={{
                 "&:hover": {
-                  color: palette.primary.light,
+                  color: medium,
                   cursor: "pointer",
                 },
               }}>
-              {users.firstName} {users.lastName}
+              {fname} {lname}
             </Typography>
-            <Typography color={medium}>{10} Followers</Typography>
+            <Typography color={medium}>{uname}</Typography>
           </Box>
         </FlexBetween>
       </FlexBetween>
@@ -55,11 +57,11 @@ const ShowProfile = ({ picturePath }) => {
       <Box p="1rem 0">
         <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
           <LocationOnOutlined fontSize="large" sx={{ color: main }} />
-          <Typography color={medium}>{users.location}</Typography>
+          <Typography color={medium}>{"unknown"}</Typography>
         </Box>
         <Box display="flex" alignItems="center" gap="1rem">
           <WorkOutlineOutlined fontSize="large" sx={{ color: main }} />
-          <Typography color={medium}>{users.occupation}</Typography>
+          <Typography color={medium}>{"student"}</Typography>
         </Box>
       </Box>
 
@@ -79,7 +81,7 @@ const ShowProfile = ({ picturePath }) => {
               <Typography color={main} fontWeight="500">
                 Twitter
               </Typography>
-              <Typography color={medium}>Social Network</Typography>
+              <Typography color={medium}>{"ppppppppp"}</Typography>
             </Box>
           </FlexBetween>
         </FlexBetween>
@@ -89,9 +91,9 @@ const ShowProfile = ({ picturePath }) => {
             <img src="../assets/linkedin.png" alt="linkedin" />
             <Box>
               <Typography color={main} fontWeight="500">
-                Linkedin
+                Instagram
               </Typography>
-              <Typography color={medium}>Network Platform</Typography>
+              <Typography color={medium}>{"pppppppppp"}</Typography>
             </Box>
           </FlexBetween>
         </FlexBetween>

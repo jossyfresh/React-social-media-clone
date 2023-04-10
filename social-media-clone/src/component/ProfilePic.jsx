@@ -1,17 +1,11 @@
-import { Box } from "@mui/material";
+import * as React from "react";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
 
-const ProfilePic = ({ image, size = "60px" }) => {
+export default function ProfilePic({ src }) {
   return (
-    <Box width={size} height={size}>
-      <img
-        style={{ objectFit: "cover", borderRadius: "50%" }}
-        width={size}
-        height={size}
-        alt="user"
-        src={`https://picsum.photos/id/200/300`}
-      />
-    </Box>
+    <Stack direction="row" spacing={2}>
+      <Avatar alt="Remy Sharp" src={src} sx={{ width: 56, height: 56 }} />
+    </Stack>
   );
-};
-
-export default ProfilePic;
+}

@@ -13,14 +13,15 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
-import { signIn, selectUser } from "../redux/features/SignInSlice";
+import { signIn } from "../redux/features/SignInSlice";
+import { useNavigate } from "react-router-dom";
 import {
   auth,
   createUserWithEmailAndPassword,
   updateProfile,
 } from "../firebase";
 import { firestore } from "../firebase";
-import { addDoc, collection } from "@firebase/firestore";
+import { doc, setDoc, collection } from "@firebase/firestore";
 import { async } from "@firebase/util";
 
 function Copyright() {
@@ -39,6 +40,7 @@ function Copyright() {
 const theme = createTheme();
 
 export default function SignUp() {
+  const [success, setsuccess] = React.useState(false);
   const [user, setuser] = React.useState({
     firstName: "",
     lastName: "",
@@ -46,36 +48,32 @@ export default function SignUp() {
     email: "",
     password: "",
   });
-
-  const dispatch = useDispatch();
-  const curr = useSelector(selectUser);
   const ref = collection(firestore, "users");
+  const navigate = useNavigate();
   const register = async (event) => {
     console.log(user);
     event.preventDefault();
-    createUserWithEmailAndPassword(auth, user.email, user.password)
-      .then((userAuth) => {
-        updateProfile(userAuth.user, {
-          displayName: user.firstName + " " + user.lastName,
-          photoURL: "",
+    const reg = () => {
+      createUserWithEmailAndPassword(auth, user.email, user.password)
+        .then((userAuth) => {
+          updateProfile(userAuth.user, {
+            displayName: user.firstName + " " + user.lastName,
+          }).then(
+            setDoc(doc(firestore, "users", userAuth.user.uid), {
+              ...user,
+              uid: userAuth.user.uid,
+            })
+          );
         })
-          .then(
-            dispatch(
-              signIn({
-                email: userAuth.user.email,
-                displayName: userAuth.user.displayName,
-                uid: userAuth.user.uid,
-                photoURL: userAuth.user.photoURL,
-              })
-            )
-          )
-          .catch((error) => {
-            console.log("user not updated");
-          });
-      })
-      .catch((err) => {
-        alert(err);
-      });
+        .catch((error) => {
+          console.log("user not updated");
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    };
+    reg();
+    navigate("/setupProfile");
   };
   return (
     <ThemeProvider theme={theme}>
@@ -129,20 +127,6 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  id="username"
-                  label="username"
-                  name="username"
-                  autoComplete="username"
-                  value={user.username}
-                  onChange={(e) =>
-                    setuser({ ...user, username: e.target.value })
-                  }
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
                   id="email"
                   label="Email Address"
                   name="email"
@@ -166,14 +150,6 @@ export default function SignUp() {
                   }
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
             </Grid>
             <Button
               type="submit"
@@ -190,7 +166,7 @@ export default function SignUp() {
                 mb: 2,
               }}>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>

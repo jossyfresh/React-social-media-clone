@@ -1,18 +1,20 @@
 import React from "react";
-import CreatePost from "./component/CreatePost";
-import Feed from "./component/Feed";
-import Friend from "./component/Friend";
-import ShowProfile from "./component/ShowProfile";
+import { Routes, Route } from "react-router-dom";
 import HomePage from "./Pages/HomePage";
-import SignUp from "./Pages/SignUpPage";
 import SignIn from "./Pages/SignInPage";
-import Navbar from "./Pages/Navbar";
+import SignUp from "./Pages/SignUpPage";
+import SetupProfile from "./Pages/SetupProfile";
+
 const App = () => {
-  const hello = "https://picsum.photos/200/300";
   return (
-    <div>
-      <Navbar />
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<SignIn />} />
+        <Route path="/homepage" element={<HomePage />} />
+        <Route path="/setupProfile" element={<SetupProfile />} />
+        <Route path="/Singup" element={<SignUp />} />
+      </Routes>
+    </>
   );
 };
 
