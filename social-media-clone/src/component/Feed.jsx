@@ -78,6 +78,7 @@ const Feed = ({ username, userimgurl, imgurl, like, comment, description }) => {
           style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
           src={imgurl}
         />
+      
       )}
       <FlexBetween mt="0.25rem">
         <FlexBetween gap="1rem">
